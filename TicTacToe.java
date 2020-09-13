@@ -1,4 +1,8 @@
+import java.util.Random;
+
 class PlayingTicTacToe {
+
+	String firstPlay = "";
 
 	// creating the board as an 3*3 array
 	String[][] board = new String[3][3];
@@ -26,6 +30,23 @@ class PlayingTicTacToe {
 		System.out.println("| " + board[2][0] + " | " + board[2][1] + " | " + board[2][2] + " |");
 		System.out.println("/---|---|---\\");
 	}
+
+	// function to create a random toss
+	public boolean decidingToss() {
+		final Random r = new Random();
+		return r.nextBoolean();
+	}
+
+	// calling a function to decide who will play first.
+	public void whoWinToss() {
+
+		if (decidingToss()) {
+			firstPlay = firstPlay + "player";
+		} else {
+			firstPlay = firstPlay + "computer";
+		}
+		System.out.println(firstPlay + ": win the toss");
+	}
 }
 
 class TicTacToe {
@@ -37,5 +58,6 @@ class TicTacToe {
 		// calling the function to set the re-set the board.
 		play.settingBoard();
 		play.printBoard();
+		play.whoWinToss();
 	}
 }
