@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-class PlayingTTT {
+class PlayingTicTacToe {
 
 	// function to re-set the board.
 	public static void settingBoard(String[][] board) {
@@ -20,27 +20,33 @@ class PlayingTTT {
 		return r.nextBoolean();
 	}
 
-	// calling a function to decide who will play first and there symbol choice.
-	public static String[] choosingSymbol(boolean toss, Scanner sc) {
-		String[] arr = new String[2];
+	/**
+	 * function to chose a symbol for the computer or the user.
+	 */
+	public static String[] choosingSymbol(boolean toss, Scanner sc, String[] symbolArray) {
 		if (toss) {
-			System.out.println("Enter a symbol");
-			arr[0] = sc.nextLine();
-			if (arr[0] == "X") {
-				arr[1] = "O";
+			System.out.println("Enter a symbol 'X' or 'O'");
+			String symbol = sc.nextLine();
+			if (symbol.equals("X")) {
+				symbolArray[0] = "X";
+				symbolArray[1] = "O";
 			} else {
-				arr[1] = "X";
+				symbolArray[0] = "O";
+				symbolArray[1] = "X";
 			}
 		} else {
 			if (decidingToss()) {
-				arr[0] = "X";
-				arr[1] = "O";
+				symbolArray[0] = "X";
+				symbolArray[1] = "O";
+				System.out.println("computer choose: "+symbolArray[1]);
 			} else {
-				arr[0] = "O";
-				arr[1] = "X";
+				symbolArray[0] = "O";
+				symbolArray[1] = "X";
+				System.out.println("computer choose: "+symbolArray[1]);
+
 			}
 		}
-		return arr;
+		return symbolArray;
 	}
 
 	private static int checkingIfPresent(Scanner sc, int index, List<Integer> occupiedPosition) {
@@ -121,12 +127,35 @@ class PlayingTTT {
 		return false;
 	}
 
+	public static boolean checkForDraw(String[][] board) {
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board.length; j++) {
+				if (board[i][j] == " ") {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * function to get the cell index from the computer.
+	 */
+	private static int cpuMove(List<Integer> occupiedPosition) {
+		Random r = new Random();
+		int index = r.nextInt(9) + 1;
+		while (occupiedPosition.contains(index)) {
+			index = r.nextInt(9) + 1;
+		}
+		return index;
+	}
+
 	public static void playingTheGame(String[][] board) {
 
 		Scanner sc = new Scanner(System.in);
 
 		List<Integer> PlayerPosition = new ArrayList<>();
-
+		List<Integer> cpuPosition = new ArrayList<>();
 		List<Integer> occupiedPosition = new ArrayList<>();
 
 		String[] SymbolArray = new String[2];
@@ -142,9 +171,10 @@ class PlayingTTT {
 		boolean cpuResult = false;
 
 		// calling a function to choose the player and cpu symbol.
-		SymbolArray = choosingSymbol(toss, sc);
+		SymbolArray = choosingSymbol(toss, sc, SymbolArray);
 		String playerSymbol = SymbolArray[0];
-		int checkIndex = 0;
+		String cpuSymbol = SymbolArray[1];
+
 		// playing till either of the competitor win or tie.
 		do {
 			if (toss) {
@@ -160,17 +190,31 @@ class PlayingTTT {
 				if (playerResult) {
 					System.out.println("Player Wins");
 				}
-				checkIndex++;
 				toss = false;
 			} else {
+				// calling a function to get cell index from the cpu.
+				int index = cpuMove(occupiedPosition);
+
+				cpuPosition.add(index);
+				occupiedPosition.add(index);
+
+				// calling a function for setting the symbol at the given index.
+				board = settingSymbol(board, cpuSymbol, index);
+
+				// calling a function to check for the winning condition.
+				cpuResult = checkForWin(cpuPosition);
+				if (cpuResult) {
+					System.out.println("cpu Wins");
+					break;
+				}
 				toss = true;
 			}
 
-			if (checkForWin(PlayerPosition) != true && checkIndex == 5) {
-				System.out.println("draw");
+			// checking for draw.
+			if (checkForDraw(board)) {
+				System.out.println("It's a draw");
 				break;
 			}
-
 		} while (playerResult == false && cpuResult == false);
 
 		printBoard(board);
@@ -197,7 +241,7 @@ class TicTacToe {
 		// creating the board as an 3*3 array
 		String[][] board = new String[3][3];
 
-		PlayingTTT.playingTheGame(board);
+		PlayingTicTacToe.playingTheGame(board);
 
 	}
 }
