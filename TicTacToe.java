@@ -1,9 +1,11 @@
-import java.util.Random;
+import java.util.*;
 
 class PlayingTicTacToe {
 
+	static Scanner sc = new Scanner(System.in);
 	String firstPlay = "";
-
+	static String player;
+	static String computer;
 	// creating the board as an 3*3 array
 	String[][] board = new String[3][3];
 
@@ -31,21 +33,52 @@ class PlayingTicTacToe {
 		System.out.println("/---|---|---\\");
 	}
 
-	// function to create a random toss
-	public boolean decidingToss() {
-		final Random r = new Random();
-		return r.nextBoolean();
+	// function to decide get toss number
+	public static int getTossNumber() {
+		Random random = new Random();
+		return random.nextInt(2) + 1;
 	}
 
-	// calling a function to decide who will play first.
-	public void whoWinToss() {
+	// function to decide get player symbol
+	public static int getPlayerSymbol() {
+		Random random = new Random();
+		return random.nextInt(2) + 1;
+	}
 
-		if (decidingToss()) {
-			firstPlay = firstPlay + "player";
+	// calling a function to decide who will play first and there symbol choice.
+	void whoWinToss() {
+		int toss = getTossNumber();
+		int symbol = getPlayerSymbol();
+		if (toss == 1) {
+
+			if (symbol == 1) {
+				player = "X";
+				computer = "O";
+			} else {
+				player = "O";
+				computer = "X";
+			}
+			System.out.println("computer won the toss and choose letter: " + computer);
+
 		} else {
-			firstPlay = firstPlay + "computer";
+			System.out.println("you won toss");
+
+			System.out.println("Enter 1 for 'X' and 2 for 'O' ");
+
+			int yourSymbol = sc.nextInt();
+
+			if (yourSymbol == 1) {
+				player = "X";
+				computer = "O";
+
+			} else {
+				player = "O";
+				computer = "X";
+			}
+			System.out.println("you choose letter: " + player);
+
 		}
-		System.out.println(firstPlay + ": win the toss");
+
 	}
 }
 
