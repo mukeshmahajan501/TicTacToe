@@ -138,17 +138,73 @@ class PlayingTicTacToe {
 		return true;
 	}
 
-	/**
-	 * function to get the cell index from the computer.
-	 */
-	private static int cpuMove(List<Integer> occupiedPosition) {
-		Random r = new Random();
-		int index = r.nextInt(9) + 1;
-		while (occupiedPosition.contains(index)) {
-			index = r.nextInt(9) + 1;
-		}
-		return index;
-	}
+	
+	
+	
+	 /**
+     * function to get the cell index from the computer.
+     * 
+     * @param occupiedPosition - index's of the occupiedPosition in the game board.
+     * @param playerPosition   - index's of the position used by the user.
+     * @param position         - index's of the position used by the CPU.
+     */
+    private static int cpuMove(List<Integer> occupiedPosition, List<Integer> PlayerPosition, List<Integer> position) {
+
+        Random r = new Random();
+        int index = r.nextInt(9) + 1;
+        while (occupiedPosition.contains(index)) {
+            index = r.nextInt(9) + 1;
+        }
+
+        int firstIndex = index;
+
+        index = possibleBestPosition(position, occupiedPosition, index);
+        if (firstIndex != index) {
+            return index;
+        }
+
+        return index;
+    }
+	
+	  /**
+     * function to get the best possible index where the symbol can be placed on the
+     * board to win or stop the opponent from winning.
+     * 
+     * @param position         - list of index from which we have to compare.
+     * @param occupiedPosition - index's of the occupiedPosition in the game board.
+     * @param index            - taking index for comparison.
+     */
+    private static int possibleBestPosition(List<Integer> position, List<Integer> occupiedPosition, int index) {
+        int[][] winning = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 1, 4, 7 }, { 2, 5, 8 }, { 3, 6, 9 }, { 1, 5, 9 },
+                { 3, 5, 7 } };
+
+        // variables to calculate index and count the number of matching element.
+        int k = 0;
+        List<Integer> unMatched = new ArrayList<>();
+
+        while (k < 8) {
+            int matchCount = 0;
+            unMatched.clear();
+
+            for (int i = 0; i < winning[k].length; i++) {
+                if (occupiedPosition.contains(winning[k][i])) {
+                    if (position.contains(winning[k][i])) {
+                        matchCount++;
+                    }
+                } else {
+                    unMatched.add(winning[k][i]);
+                }
+            }
+
+            if (matchCount == 2 && unMatched.size() == 1) {
+                index = unMatched.get(0);
+                break;
+            }
+            k++;
+        }
+        return index;
+    }
+
 
 	public static void playingTheGame(String[][] board) {
 
@@ -193,7 +249,8 @@ class PlayingTicTacToe {
 				toss = false;
 			} else {
 				// calling a function to get cell index from the cpu.
-				int index = cpuMove(occupiedPosition);
+				
+                int index = cpuMove(occupiedPosition, PlayerPosition, cpuPosition);
 
 				cpuPosition.add(index);
 				occupiedPosition.add(index);
