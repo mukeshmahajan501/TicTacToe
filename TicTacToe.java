@@ -52,7 +52,7 @@ class TicTacToe {
         // setting winning condition for both opponents.
         boolean playerResult = false;
         boolean cpuResult = false;
-
+        boolean gameOver=false;
         // playing till either of the competitor win or tie.
         do {
             // if toss is true it will be player turn.
@@ -73,6 +73,7 @@ class TicTacToe {
                 // calling a function to check for the winning condition.
                 playerResult = play.checkForWin(PlayerPosition);
                 if (playerResult) {
+                	gameOver=true;
                     System.out.println("\nPlayer Wins");
                     break;
                 }
@@ -91,6 +92,7 @@ class TicTacToe {
                 // calling a function to check for the winning condition.
                 cpuResult = play.checkForWin(cpuPosition);
                 if (cpuResult) {
+                	gameOver=true;
                     System.out.println("\ncpu Wins");
                     break;
                 }
@@ -99,12 +101,18 @@ class TicTacToe {
 
             // checking for draw.
             if (play.checkForDraw(board)) {
+            	
                 System.out.println("\nIt's a draw");
                 break;
             }
         } while (playerResult == false && cpuResult == false);
 
         play.displayBoard(board);
+        
+        if(gameOver==true)
+        {
+        	System.out.println("Game is over!!!");
+        }
     }
 
     /**
